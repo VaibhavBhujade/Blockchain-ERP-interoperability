@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    Form view -->
+    <record id="transaction_form" model="ir.ui.view">
+            <field name="name">transaction.details.form</field>
+            <field name="model">transaction.details</field>
+            <field name="arch" type="xml">
+                <form string="AllTransactions">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="transactionID"></field>
+                                <field name="product_name"></field>
+                                <field name="product_code"></field>
+                                <field name="quantity"></field>
+                                <field name="quantity_unit"></field>
+                                <field name="price"></field>
+                            </group>
+                            <group>
+                                <field name="expected_delivery"></field>
+                                <field name="promise_delivery"></field>
+                                <field name="eid_buyer"></field>
+                                <field name="eid_seller"></field>
+                                <field name="prev_transactions"></field>
+                                <field name="amount"></field>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="other_details"></field>
+                        </group>
+                    <button string="Add to ledger" type="object" name="send_to_ledger"/>
+                    </sheet>
+
+
+                </form>
+            </field>
+        </record>
+
+<!--    Attach action to record: action_summary-->
+    <record id="action_summary" model="ir.actions.act_window">
+        <field name="name">Transaction</field>
+        <field name="type">ir.action.act.window</field>
+        <field name="res_model">transaction.details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Make first transaction
+            </p>
+        </field>
+
+    </record>
+
+    <menuitem id="transaction_root" name="Transaction" sequence="0"/>
+    <menuitem id="transaction_summary" name="TransactionSummary" parent="transaction_root" action="action_summary"/>
+
+</odoo>
