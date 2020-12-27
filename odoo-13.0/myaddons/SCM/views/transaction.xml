@@ -29,6 +29,7 @@
                             <field name="other_details"></field>
                         </group>
                     <button string="Add to ledger" type="object" name="send_to_ledger"/>
+                    <button string="Query ledger" type="object" name="query_ledger"/>
                     </sheet>
 
 

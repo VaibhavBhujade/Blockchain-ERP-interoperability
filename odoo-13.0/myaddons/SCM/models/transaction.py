@@ -36,6 +36,36 @@ class TransactionDetails(models.Model):
     amount = fields.Float(string='Final amount (inc GST and delivery charges)')
     other_details = fields.Binary('Add other ERP specific files')
 
+    def query_ledger(self):
+        _logger.info('CONNECTION SUCCESSFUL')
+        data = {
+            'label': 'query'
+        }
+        _logger.info(data)
+        _logger.info(self._name)
+        #### TCP ####
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = ('localhost', 10000)
+
+        sock.connect(server_address)
+
+        try:
+
+            # Send data
+            message = data
+            print(sys.stderr, 'sending "%s"' % message)
+            s = json.dumps(data, indent=4, cls=DateTimeEncoder)
+            print("sendddddddd")
+            sock.sendall(bytes(s, encoding="utf-8"))
+            print("sent")
+
+
+
+        finally:
+            print(sys.stderr, 'closing socket')
+            sock.close()
+        #### END ####
+
     def send_to_ledger(self):
         _logger.info('CONNECTION SUCCESSFUL')
         data = {'label': 'transaction',
