@@ -1,0 +1,54 @@
+version: '2'
+
+networks:
+  test:
+
+services:
+
+  tls_ca_ordorg:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+    ports:
+      - "9054:9054"
+    command: sh -c 'fabric-ca-server start'
+    volumes:
+      - ../organizations/fabric-ca/ordererOrg/tls-ordererOrg:/etc/hyperledger/fabric-ca-server
+    container_name: tls_ca_ordorg
+    networks:
+      - test
+
+  tls_org1:
+    container_name: tls_org1
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    command: sh -c 'fabric-ca-server start'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=tls-org1
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0,localhost
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - ../organizations/fabric-ca/org1/org1_tls:/etc/hyperledger/fabric-ca-server
+    networks:
+      - test
+    ports:
+      - 7052:7052
+
+
+  tls_org2:
+    container_name: tls_org2
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    command: sh -c 'fabric-ca-server start'
+    environment:
+      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_CSR_CN=tls-org2
+      - FABRIC_CA_SERVER_CSR_HOSTS=0.0.0.0,localhost
+      - FABRIC_CA_SERVER_DEBUG=true
+    volumes:
+      - ../organizations/fabric-ca/org2/org2_tls:/etc/hyperledger/fabric-ca-server
+    networks:
+      - test
+    ports:
+      - 8052:8052    
