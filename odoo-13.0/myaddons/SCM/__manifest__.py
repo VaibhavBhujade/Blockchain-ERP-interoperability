@@ -6,7 +6,7 @@
     'summary': 'SCM module',
     'description': "",
     'depends': ['base'],
-    'data': ['views/transaction.xml'],
+    'data': ['views/transaction.xml','views/enrollment.xml','views/register.xml'],
     'installable': True,
     'application': True,
 

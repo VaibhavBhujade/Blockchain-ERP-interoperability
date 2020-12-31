@@ -37,6 +37,8 @@
             </field>
         </record>
 
+
+
 <!--    Attach action to record: action_summary-->
     <record id="action_summary" model="ir.actions.act_window">
         <field name="name">Transaction</field>
@@ -51,6 +53,7 @@
         </field>
 
     </record>
+
 
     <menuitem id="transaction_root" name="Transaction" sequence="0"/>
     <menuitem id="transaction_summary" name="TransactionSummary" parent="transaction_root" action="action_summary"/>

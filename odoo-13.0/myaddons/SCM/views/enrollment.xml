@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--Enrollment -->
+    <record id="enrollment_form" model="ir.ui.view">
+            <field name="name">enrollment.details.form</field>
+            <field name="model">enrollment.details</field>
+            <field name="arch" type="xml">
+                <form string="AllTransactions">
+                    <sheet>
+                            <group>
+                                <field name="org"></field>
+                                <field name="enrollmentid"></field>
+                                <field name="enrollmentsecret"></field>
+                             </group>
+                    <button string="Enroll" type="object" name="enroll_admin"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <!--    Attach action to record: action_summary-->
+    <record id="enroll_admin" model="ir.actions.act_window">
+        <field name="name">Enrollment ID</field>
+        <field name="type">ir.action.act.window</field>
+        <field name="res_model">enrollment.details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Enroll your admin
+            </p>
+        </field>
+
+    </record>
+
+    <menuitem id="enrollAdmin" name="Enroll Admin" parent="transaction_root" action="enroll_admin"/>
+</odoo>

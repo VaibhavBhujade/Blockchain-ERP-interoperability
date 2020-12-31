@@ -45,7 +45,7 @@ async function main(received) {
         // Get the contract from the network.
         const contract = network.getContract('transactionv1');
 
-        /*var key_ex = received.transactionID;
+        var key_ex = received.transactionID;
         var pname_ex = received.product_name;
         var pcode_ex = received.product_code;
         var q_ex = received.quantity;
@@ -59,18 +59,18 @@ async function main(received) {
         var seller_ex = received.eid_seller;
         var prev_ex= received.prev_transactions;
         await contract.submitTransaction('Create', key_ex, pcode_ex, q_ex, price_ex, pname_ex, batch_ex, unit_ex, amount_ex, del_ex, buyer_ex, pdel_ex, seller_ex);
-        */await contract.submitTransaction('Create', 'tx18', 'ks', 'Fsbamndzj', 'Sverbcjbz', 'ck', "zj", "dj", "jzd", "dj", "jz", "jd", "jad");
-
+        
         console.log('Transaction has been submitted');
-
+        //return true;
         // Disconnect from the gateway.
         await gateway.disconnect();
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
+        //return false;
         process.exit(1);
     }
 }
 
-main();
+//main();
 module.exports={main};

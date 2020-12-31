@@ -1,3 +1,4 @@
+from myaddons.SCM.models.connection import connect_send
 from odoo import models, fields, api
 
 import logging
@@ -37,37 +38,16 @@ class TransactionDetails(models.Model):
     other_details = fields.Binary('Add other ERP specific files')
 
     def query_ledger(self):
-        _logger.info('CONNECTION SUCCESSFUL')
+        self.env.cr.execute("""SELECT enrollment_details.enrollmentid FROM public.enrollment_details""")
+        enrollmentID=self.env.cr.fetchall()[0][0]
         data = {
-            'label': 'query'
+            'label': 'query',
+            'enrollmentID':enrollmentID,
         }
+        connect_send(data)
         _logger.info(data)
-        _logger.info(self._name)
-        #### TCP ####
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('localhost', 10000)
-
-        sock.connect(server_address)
-
-        try:
-
-            # Send data
-            message = data
-            print(sys.stderr, 'sending "%s"' % message)
-            s = json.dumps(data, indent=4, cls=DateTimeEncoder)
-            print("sendddddddd")
-            sock.sendall(bytes(s, encoding="utf-8"))
-            print("sent")
-
-
-
-        finally:
-            print(sys.stderr, 'closing socket')
-            sock.close()
-        #### END ####
 
     def send_to_ledger(self):
-        _logger.info('CONNECTION SUCCESSFUL')
         data = {'label': 'transaction',
                 'transactionID': self.transactionID,
                 'product_name': self.product_name,
@@ -82,30 +62,5 @@ class TransactionDetails(models.Model):
                 'prev_transactions': self.prev_transactions,
                 'amount': self.amount
                 }
-        _logger.info(data)
-        _logger.info(self._name)
-        #### TCP ####
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('localhost', 10000)
 
-        sock.connect(server_address)
-
-        try:
-
-            # Send data
-            message = data
-            print(sys.stderr, 'sending "%s"' % message)
-            s = json.dumps(data, indent=4, cls=DateTimeEncoder)
-            print("sendddddddd")
-            sock.sendall(bytes(s,encoding="utf-8"))
-            print("sent")
-
-
-
-        finally:
-            print(sys.stderr, 'closing socket')
-            sock.close()
-        #### END ####
-
-        _logger.info('helloagain')
-        # data = json.loads(request.httprequest.data)
+        connect_send(data)

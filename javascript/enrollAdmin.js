@@ -12,9 +12,9 @@ const fs = require('fs');
 const path = require('path');
 var os=require('os');
 
-async function main() {
+async function _enrollAdmin(received) {
     try {
-        var org = process.argv[2];
+        var org = received.org;
         var orgName1 = org.charAt(0).toUpperCase() + org.substr(1);
         var orgMSP = orgName1 + 'MSP';
         // load the network configuration
@@ -47,7 +47,8 @@ async function main() {
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'ca-'+org+'-admin', enrollmentSecret: 'ca-'+org+'-adminpw' });
+        //Enrollment ID:'ca-org-admin',Enrollment Secret: 'ca-org-adminpw'
+        const enrollment = await ca.enroll({ enrollmentID: received.enrollmentID, enrollmentSecret: received.enrollmentSecret });
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -65,4 +66,5 @@ async function main() {
     }
 }
 
-main();
+//main();
+module.exports={_enrollAdmin};
