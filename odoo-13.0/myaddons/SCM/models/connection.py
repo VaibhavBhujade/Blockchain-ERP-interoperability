@@ -18,6 +18,7 @@ def connect_send(data):
     #### TCP ####
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = ('localhost', 10000)
+    print(server_address)
     sock.connect(server_address)
 
     try:
@@ -25,9 +26,12 @@ def connect_send(data):
         message = data
         print(sys.stderr, 'sending "%s"' % message)
         s = json.dumps(data, indent=4, cls=DateTimeEncoder)
+        print(s)
         sock.sendall(bytes(s, encoding="utf-8"))
 
+
     finally:
+        print(str(sock.recv(1024), 'utf-8'))
         print(sys.stderr, 'closing socket')
         sock.close()
     #### END ####

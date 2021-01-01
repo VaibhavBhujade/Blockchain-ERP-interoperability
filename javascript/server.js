@@ -1,12 +1,11 @@
-const net = require('net');
+var net = require('net');
 const invoketx=require('./invoketx.js')
 const querytx=require('./querytx.js')
 const enrollAdmin=require('./enrollAdmin.js')
 const registerUser=require('./registerUser.js')
 // A use-once date server. Clients get the date on connection and that's it!
-const server = net.createServer((socket) => {
+var server = net.createServer((socket) => {
     console.log("Waiting for connection");
-    var response;
     socket.on('data', (buffer) => {
         console.log('Request from', socket.remoteAddress, 'port', socket.remotePort);
         var received=JSON.parse(buffer.toString('utf-8'));
@@ -15,26 +14,36 @@ const server = net.createServer((socket) => {
         if(received.label=='transaction')
         {
             invoketx.main(received);
+            var msgx = "transaction done";
+            socket.write(msgx);
+            socket.end();
         }
         else if(received.label=='query')
         {
             console.log(received.enrollmentID)
+            var msgx = "query done";
+            socket.write(msgx);
+            socket.end();
         }
         else if(received.label=='enroll')
         {
             enrollAdmin._enrollAdmin(received);
+            var msgx = "enroll done";
+            socket.write(msgx);
             console.log("Enroll request");
+            socket.end();
         }
         else if(received.label=='register')
         {
             registerUser._registerUser(received);
+            var msgx = "register done";
+            socket.write(msgx);
+            socket.end();
         }
         else
         console.log("Invalid request");
 
     });
- 
-    socket.end();
 });
 
 server.listen(10000);
