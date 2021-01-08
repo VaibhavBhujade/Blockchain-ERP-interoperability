@@ -58,7 +58,7 @@ async function main(received) {
         var pdel_ex = received.promise_delivery;
         var seller_ex = received.eid_seller;
         var prev_ex= received.prev_transactions;
-        await contract.submitTransaction('Create', key_ex, pcode_ex, q_ex, price_ex, pname_ex, batch_ex, unit_ex, amount_ex, del_ex, buyer_ex, pdel_ex, seller_ex);
+        await contract.submitTransaction('Create', key_ex, pcode_ex, q_ex, price_ex, pname_ex, batch_ex, unit_ex, amount_ex, del_ex, buyer_ex, pdel_ex, seller_ex, prev_ex);
         
         console.log('Transaction has been submitted');
         //return true;

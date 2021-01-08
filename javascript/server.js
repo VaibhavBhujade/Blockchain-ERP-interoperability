@@ -20,10 +20,14 @@ var server = net.createServer((socket) => {
         }
         else if(received.label=='query')
         {
-            console.log(received.enrollmentID)
-            var msgx = "query done";
-            socket.write(msgx);
-            socket.end();
+            querytx.query_all(received);
+            (async () => {
+               const k = await querytx.query_all(received)
+               console.log(k);
+               console.log(typeof k);
+               socket.write(k);
+               socket.end();
+              })()  
         }
         else if(received.label=='enroll')
         {
