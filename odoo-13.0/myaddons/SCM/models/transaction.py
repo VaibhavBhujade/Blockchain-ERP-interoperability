@@ -11,6 +11,7 @@ import sys
 import datetime
 from json import JSONEncoder
 
+
 class DateTimeEncoder(JSONEncoder):
     # Override the default method
     def default(self, obj):
@@ -39,16 +40,37 @@ class TransactionDetails(models.Model):
 
     def query_ledger(self):
         self.env.cr.execute("""SELECT enrollment_details.enrollmentid FROM public.enrollment_details""")
-        enrollmentID=self.env.cr.fetchall()[0][0]
+        enrollmentID = self.env.cr.fetchall()[0][0]
+
+        # fetching org name from db
+        self.env.cr.execute("""SELECT enrollment_details.org FROM public.enrollment_details""")
+        orgname = self.env.cr.fetchall()[0][0]
+
+        # fetch user id from db: NOTE: there are many users. for now fetch only first one.
+        self.env.cr.execute("""SELECT register_details.userid FROM public.register_details""")
+        userid = self.env.cr.fetchall()[0][0]
+
         data = {
             'label': 'query',
-            'enrollmentID':enrollmentID,
+            'enrollmentID': enrollmentID,
+            'org': orgname,
+            'userid': userid
         }
         connect_send(data)
         _logger.info(data)
 
     def send_to_ledger(self):
+        # fetching org name from db
+        self.env.cr.execute("""SELECT enrollment_details.org FROM public.enrollment_details""")
+        orgname = self.env.cr.fetchall()[0][0]
+
+        # fetch user id from db: NOTE: there are many users. for now fetch only first one.
+        self.env.cr.execute("""SELECT register_details.userid FROM public.register_details""")
+        userid = self.env.cr.fetchall()[0][0]
+
         data = {'label': 'transaction',
+                'org': orgname,
+                'userid': userid,
                 'transactionID': self.transactionID,
                 'product_name': self.product_name,
                 'product_code': self.product_code,
@@ -64,3 +86,4 @@ class TransactionDetails(models.Model):
                 }
 
         connect_send(data)
+        self.env.user.notify_success("Transaction Successful")
