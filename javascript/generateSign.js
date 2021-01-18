@@ -6,11 +6,12 @@
 
 'use strict';
 var os = require('os');
- 
-async function main(received) {
+var signature_string;
+
+async function generate(received) {
     try {
         const { KJUR, KEYUTIL } = require('jsrsasign');
-        const CryptoJS = require('crypto-js');    
+        const CryptoJS = require('crypto-js');
         const { Gateway, Wallets } = require('fabric-network');
         const fs = require('fs');
         const path = require('path');
@@ -36,21 +37,42 @@ async function main(received) {
             console.log('Run the registerUser.js application before retrying');
             return;
         }
-
-        const walletContents = await wallet.get(received.userid);
-
-        var hashToAction = '252164fed8f14ef37985512a6d49d7bbb8f4b6ec3e5b8cb9a617c762478c605f';
-        //var hashToAction = CryptoJS.SHA256(fileLoaded).toString();
+        // console.log(received.userid);
+       
+        var transaction_details = {
+            key_ex : received.transactionID,
+            pcode_ex : received.product_code,
+            q_ex :received.quantity,
+            price_ex : received.price,
+            pname_ex :received.product_name,
+            batch_ex : "100",
+            unit_ex : received.quantity_unit, 
+            amount_ex : received.amount, 
+            del_ex : received.expected_delivery, 
+            buyer_ex : received.eid_buyer, 
+            pdel_ex : received.promise_delivery, 
+            seller_ex : received.eid_seller, 
+            prev_ex : received.prev_transactions
+        }
+        console.log(transaction_details)
+        var transaction_string = JSON.stringify(transaction_details);
+        // var received_string = received.toString();
+        console.log(transaction_string)
+        var hashToAction = CryptoJS.SHA256(transaction_string).toString();
         console.log("Hash of the file: " + hashToAction);
-        var sigValueBase64 = "MEUCIQCJX+Mu6myFjOIndDaiXG3b9aKzb8Hh4/FIhRSOWa7DqwIgLlVJcLDUrJVXmnFbIE1UTwpTuNKgJMSUAe5nPLlh/gA=";
-        // get certificate from the certfile
-        const certLoaded = walletContents.credentials.certificate;
-        var userPublicKey = KEYUTIL.getKey(certLoaded);
-        var recover = new KJUR.crypto.Signature({"alg": "SHA256withECDSA"});
-        recover.init(userPublicKey);
-        recover.updateHex(hashToAction);
-        var getBackSigValueHex = new Buffer(sigValueBase64, 'base64').toString('hex');
-        console.log("Signature verified with certificate provided: " + recover.verify(getBackSigValueHex));
+
+         // extract certificate info from wallet
+        const walletContents = await wallet.get(received.userid);
+        const userPrivateKey = walletContents.credentials.privateKey;
+
+        var sig = new KJUR.crypto.Signature({"alg": "SHA256withECDSA"});
+        sig.init(userPrivateKey, "");
+        sig.updateHex(hashToAction);
+        var sigValueHex = sig.sign();
+        var sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
+        console.log(sigValueBase64)
+        signature_string = await sigValueBase64.toString('base64');
+        console.log("Signature: " + signature_string);
 
 
         // Create a new gateway for connecting to our peer node.
@@ -61,6 +83,7 @@ async function main(received) {
         const network = await gateway.getNetwork('demochannel');
 
         // Get the contract from the network.
+        /*
         const contract = network.getContract('transactionv1');
 
         var key_ex = received.transactionID;
@@ -77,11 +100,13 @@ async function main(received) {
         var seller_ex = received.eid_seller;
         var prev_ex= received.prev_transactions;
         await contract.submitTransaction('Create', key_ex, pcode_ex, q_ex, price_ex, pname_ex, batch_ex, unit_ex, amount_ex, del_ex, buyer_ex, pdel_ex, seller_ex, prev_ex);
-        
-        console.log('Transaction has been submitted');
+        */
+
+        console.log('Signature has been submitted');
         //return true;
         // Disconnect from the gateway.
         await gateway.disconnect();
+        return await signature_string;
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -91,4 +116,4 @@ async function main(received) {
 }
 
 //main();
-module.exports={main};
+module.exports={generate};

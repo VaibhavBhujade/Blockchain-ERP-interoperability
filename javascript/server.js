@@ -3,6 +3,8 @@ const invoketx=require('./invoketx.js')
 const querytx=require('./querytx.js')
 const enrollAdmin=require('./enrollAdmin.js')
 const registerUser=require('./registerUser.js')
+const generateSign=require('./generateSign.js')
+
 // A use-once date server. Clients get the date on connection and that's it!
 var server = net.createServer((socket) => {
     console.log("Waiting for connection");
@@ -23,6 +25,17 @@ var server = net.createServer((socket) => {
             querytx.query_all(received);
             (async () => {
                const k = await querytx.query_all(received)
+               console.log(k);
+               console.log(typeof k);
+               socket.write(k);
+               socket.end();
+              })()  
+        }
+        else if(received.label=='generate')
+        {
+            generateSign.generate(received);
+            (async () => {
+               const k = await generateSign.generate(received)
                console.log(k);
                console.log(typeof k);
                socket.write(k);

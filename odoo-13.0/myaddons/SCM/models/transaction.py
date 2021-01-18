@@ -59,6 +59,39 @@ class TransactionDetails(models.Model):
         connect_send(data)
         _logger.info(data)
 
+    def generate_sign(self):
+        self.env.cr.execute("""SELECT enrollment_details.enrollmentid FROM public.enrollment_details""")
+        enrollmentID = self.env.cr.fetchall()[0][0]
+
+        # fetching org name from db
+        self.env.cr.execute("""SELECT enrollment_details.org FROM public.enrollment_details""")
+        orgname = self.env.cr.fetchall()[0][0]
+
+        # fetch user id from db: NOTE: there are many users. for now fetch only first one.
+        self.env.cr.execute("""SELECT register_details.userid FROM public.register_details""")
+        userid = self.env.cr.fetchall()[0][0]
+
+        data = {
+            'label': 'generate',
+            'enrollmentID': enrollmentID,
+            'org': orgname,
+            'userid': userid,
+            'transactionID': self.transactionID,
+            'product_name': self.product_name,
+            'product_code': self.product_code,
+            'quantity': self.quantity,
+            'quantity_unit': self.quantity_unit,
+            'price': self.price,
+            'expected_delivery': self.expected_delivery,
+            'promise_delivery': self.promise_delivery,
+            'eid_buyer': self.eid_buyer,
+            'eid_seller': self.eid_seller,
+            'prev_transactions': self.prev_transactions,
+            'amount': self.amount
+        }
+        connect_send(data)
+        _logger.info(data)
+
     def send_to_ledger(self):
         # fetching org name from db
         self.env.cr.execute("""SELECT enrollment_details.org FROM public.enrollment_details""")
