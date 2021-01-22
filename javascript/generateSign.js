@@ -8,6 +8,17 @@
 var os = require('os');
 var signature_string;
 
+async function calculateHash(data) {
+    try {
+        const CryptoJS = require('crypto-js');
+        var hashToAction = CryptoJS.SHA256(data).toString();
+        return hashToAction;
+    }
+    catch {
+        console.log("Exception occured");
+    }
+}
+
 async function generate(received) {
     try {
         const { KJUR, KEYUTIL } = require('jsrsasign');
@@ -58,7 +69,7 @@ async function generate(received) {
         var transaction_string = JSON.stringify(transaction_details);
         // var received_string = received.toString();
         console.log(transaction_string)
-        var hashToAction = CryptoJS.SHA256(transaction_string).toString();
+        var hashToAction =  await calculateHash(transaction_string)
         console.log("Hash of the file: " + hashToAction);
 
          // extract certificate info from wallet
@@ -69,7 +80,7 @@ async function generate(received) {
         sig.init(userPrivateKey, "");
         sig.updateHex(hashToAction);
         var sigValueHex = sig.sign();
-        var sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
+        var sigValueBase64 = new Buffer.from(sigValueHex, 'hex').toString('base64');
         console.log(sigValueBase64)
         signature_string = await sigValueBase64.toString('base64');
         console.log("Signature: " + signature_string);
@@ -102,14 +113,14 @@ async function generate(received) {
         await contract.submitTransaction('Create', key_ex, pcode_ex, q_ex, price_ex, pname_ex, batch_ex, unit_ex, amount_ex, del_ex, buyer_ex, pdel_ex, seller_ex, prev_ex);
         */
 
-        console.log('Signature has been submitted');
+        console.log('Signature has been created');
         //return true;
         // Disconnect from the gateway.
         await gateway.disconnect();
         return await signature_string;
 
     } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
+        console.error(`Failed to generate Signature: ${error}`);
         //return false;
         process.exit(1);
     }

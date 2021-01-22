@@ -56,7 +56,7 @@ class TransactionDetails(models.Model):
             'org': orgname,
             'userid': userid
         }
-        connect_send(data)
+        connect_send(data, 'query')
         _logger.info(data)
 
     def generate_sign(self):
@@ -89,7 +89,7 @@ class TransactionDetails(models.Model):
             'prev_transactions': self.prev_transactions,
             'amount': self.amount
         }
-        connect_send(data)
+        connect_send(data, 'generateSign')
         _logger.info(data)
 
     def send_to_ledger(self):
@@ -118,5 +118,5 @@ class TransactionDetails(models.Model):
                 'amount': self.amount
                 }
 
-        connect_send(data)
+        connect_send(data, 'transaction')
         self.env.user.notify_success("Transaction Successful")

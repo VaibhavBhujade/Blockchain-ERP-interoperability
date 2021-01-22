@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="transacts" name="Transactions on Ledger">
+        <t t-call="website.layout">
+            <div class="container">
+                Hey its working ...
+                <t t-foreach="transactions" t-as="transaction">
+                    <t t-esc="transaction"></t>
+                </t>
+                <t t-esc="transactions"></t>
+                <t t-foreach="transactions" t-as="transaction">
+                    <t t-esc="transactions"></t>
+                </t>
+
+                <t t-foreach="fake" t-as="fak">
+                    <t t-esc="fak"></t>
+                </t>
+                <t t-esc="fake"></t>
+                <t t-foreach="fake" t-as="fak">
+                    <t t-esc="fake"></t>
+                </t>
+            </div>
+        </t>
+
+    </template>
+
+</odoo>

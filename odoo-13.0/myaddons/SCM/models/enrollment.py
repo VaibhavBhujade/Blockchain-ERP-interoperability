@@ -24,5 +24,5 @@ class Enrollment(models.Model):
             'enrollmentSecret': self.enrollmentsecret,
             'org': self.org,
         }
-        connect_send(data)
+        connect_send(data, 'enroll')
         self.env.user.notify_success("Admin has been enrolled successfully")

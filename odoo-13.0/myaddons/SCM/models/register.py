@@ -21,5 +21,5 @@ class Register(models.Model):
             'userID': self.userid,
             'org': self.org,
         }
-        connect_send(data)
+        connect_send(data, 'register')
         self.env.user.notify_success(self.userid + " from " + self.org + " has been enrolled successfully")

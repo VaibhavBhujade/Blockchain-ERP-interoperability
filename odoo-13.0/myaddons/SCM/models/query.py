@@ -21,4 +21,4 @@ class Query(models.Model):
         }
 
         _logger.info("Is this printing?")
-        # connect_send(data)
+        connect_send(data)

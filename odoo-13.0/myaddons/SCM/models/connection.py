@@ -4,7 +4,10 @@ import datetime
 import logging
 import sys
 import json
-_logger=logging.getLogger(__name__)
+
+
+_logger = logging.getLogger(__name__)
+from myaddons.SCM.models.main import display
 
 class DateTimeEncoder(JSONEncoder):
     # Override the default method
@@ -12,7 +15,7 @@ class DateTimeEncoder(JSONEncoder):
         if isinstance(obj, (datetime.date, datetime.datetime)):
             return obj.isoformat()
 
-def connect_send(data):
+def connect_send(data, flag):
     _logger.info('CONNECTION SUCCESSFUL')
     _logger.info(data)
     #### TCP ####
@@ -31,7 +34,11 @@ def connect_send(data):
 
 
     finally:
-        print(str(sock.recv(1024), 'utf-8'))
+        information = str(sock.recv(1024), 'utf-8')
+        print(information)
+        if flag == 'query':
+            display(information)
+            print("Printed the information")
         print(sys.stderr, 'closing socket')
         sock.close()
     #### END ####
