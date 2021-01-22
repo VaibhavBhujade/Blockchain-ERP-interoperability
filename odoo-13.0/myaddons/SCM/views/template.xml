@@ -4,21 +4,17 @@
     <template id="transacts" name="Transactions on Ledger">
         <t t-call="website.layout">
             <div class="container">
-                Hey its working ...
-                <t t-foreach="transactions" t-as="transaction">
-                    <t t-esc="transaction"></t>
-                </t>
-                <t t-esc="transactions"></t>
-                <t t-foreach="transactions" t-as="transaction">
-                    <t t-esc="transactions"></t>
-                </t>
+                Queried results received from ledger:
 
-                <t t-foreach="fake" t-as="fak">
-                    <t t-esc="fak"></t>
-                </t>
-                <t t-esc="fake"></t>
-                <t t-foreach="fake" t-as="fak">
-                    <t t-esc="fake"></t>
+<!--                <t t-esc="transactions"></t>-->
+
+                <t t-foreach="transactions" t-as="transaction">
+                    <tr t-att-style="people_odd and 'background-color:#eeeeee' or None">
+                            <td style="padding: 5px">
+                                <t t-esc="transaction"></t><br/><br/>
+                            </td>
+                    </tr>
+
                 </t>
             </div>
         </t>

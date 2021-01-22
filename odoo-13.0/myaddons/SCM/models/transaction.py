@@ -36,6 +36,8 @@ class TransactionDetails(models.Model):
     eid_seller = fields.Char('EID Seller')
     prev_transactions = fields.Char('Prev transaction ids')
     amount = fields.Float(string='Final amount (inc GST and delivery charges)')
+    signature1 = fields.Char('Signature of Org1 as received')
+    publicKey1 = fields.Char('Enter Public key of Org1')
     other_details = fields.Binary('Add other ERP specific files')
 
     def query_ledger(self):
@@ -58,6 +60,10 @@ class TransactionDetails(models.Model):
         }
         connect_send(data, 'query')
         _logger.info(data)
+        return {
+            "url": "/querytx/",
+            "type": "ir.actions.act_url"
+        }
 
     def generate_sign(self):
         self.env.cr.execute("""SELECT enrollment_details.enrollmentid FROM public.enrollment_details""")
@@ -115,7 +121,9 @@ class TransactionDetails(models.Model):
                 'eid_buyer': self.eid_buyer,
                 'eid_seller': self.eid_seller,
                 'prev_transactions': self.prev_transactions,
-                'amount': self.amount
+                'amount': self.amount,
+                'signature1': self.signature1,
+                'publicKey1': self.publicKey1
                 }
 
         connect_send(data, 'transaction')

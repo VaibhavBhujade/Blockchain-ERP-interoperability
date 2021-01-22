@@ -5,9 +5,39 @@ import logging
 import sys
 import json
 
+class DisplayHelper:
+    __instance = None
+    data = None
+
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if DisplayHelper.__instance is None:
+            print("First time called")
+            DisplayHelper()
+        return DisplayHelper.__instance
+
+    def __init__(self):
+        """ Virtually private constructor. """
+        if DisplayHelper.__instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            DisplayHelper.__instance = self
+
+    def display(self, information):
+        print("Display Function called")
+        print("Information: " + information)
+        transaction_list = information.split('}')
+        DisplayHelper.data = transaction_list
+        print("data", DisplayHelper.data)
+        print("Type", type(DisplayHelper.data))
+
+
+    def getData(self):
+        return DisplayHelper.data
 
 _logger = logging.getLogger(__name__)
-from myaddons.SCM.models.main import display
+
 
 class DateTimeEncoder(JSONEncoder):
     # Override the default method
@@ -37,8 +67,11 @@ def connect_send(data, flag):
         information = str(sock.recv(1024), 'utf-8')
         print(information)
         if flag == 'query':
-            display(information)
+            displayHelper = DisplayHelper.getInstance()
+            displayHelper.display(information)
             print("Printed the information")
+            displayHelper.getData()
+
         print(sys.stderr, 'closing socket')
         sock.close()
     #### END ####

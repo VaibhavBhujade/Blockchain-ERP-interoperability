@@ -26,6 +26,10 @@
                             </group>
                         </group>
                         <group>
+                            <field name="signature1"></field>
+                            <field name="publicKey1"></field>
+                        </group>
+                        <group>
                             <field name="other_details"></field>
                         </group>
                     <button string="Add to ledger" type="object" name="send_to_ledger"/>

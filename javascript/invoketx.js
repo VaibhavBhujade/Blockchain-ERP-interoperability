@@ -6,7 +6,11 @@
 
 'use strict';
 var os = require('os');
- 
+//import {getDataToHash} from './generateSign.js';
+const generateSign =require('./generateSign.js');
+// const getDataToHash =require('./generateSign.js');
+// const calculateHash =require('./generateSign.js');
+// const getDataToHashWithSignature =require('./generateSign.js');
 async function main(received) {
     try {
         const { KJUR, KEYUTIL } = require('jsrsasign');
@@ -39,19 +43,39 @@ async function main(received) {
 
         const walletContents = await wallet.get(received.userid);
 
-        var hashToAction = '252164fed8f14ef37985512a6d49d7bbb8f4b6ec3e5b8cb9a617c762478c605f';
-        //var hashToAction = CryptoJS.SHA256(fileLoaded).toString();
+        //get data to hash 
+        var transaction_string = await generateSign.getDataToHash(received);
+        //var transaction_string = "hello";
+        //hash the transaction data
+        var hashToAction =  await generateSign.calculateHash(transaction_string) 
         console.log("Hash of the file: " + hashToAction);
-        var sigValueBase64 = "MEUCIQCJX+Mu6myFjOIndDaiXG3b9aKzb8Hh4/FIhRSOWa7DqwIgLlVJcLDUrJVXmnFbIE1UTwpTuNKgJMSUAe5nPLlh/gA=";
+
+        //Get signature and public key of received object user
+        var sigValueBase64 = received.signature1;
+        var publicKey1 = received.publicKey1;
+
         // get certificate from the certfile
         const certLoaded = walletContents.credentials.certificate;
-        var userPublicKey = KEYUTIL.getKey(certLoaded);
+
+        //var userPublicKey = KEYUTIL.getKey(certLoaded);
+        var userPublicKey = KEYUTIL.getKey(publicKey1);
         var recover = new KJUR.crypto.Signature({"alg": "SHA256withECDSA"});
         recover.init(userPublicKey);
         recover.updateHex(hashToAction);
-        var getBackSigValueHex = new Buffer(sigValueBase64, 'base64').toString('hex');
+        var getBackSigValueHex = new Buffer.from(sigValueBase64, 'base64').toString('hex');
+        //Check if correct
+        if (recover.verify(getBackSigValueHex) != true) {
+            throw new Error('Signature does not match!!');
+        }
         console.log("Signature verified with certificate provided: " + recover.verify(getBackSigValueHex));
 
+        //Signature of user 2
+        var transaction_string_with_two_signatures = await generateSign.getDataToHashWithSignature(received);
+        var finalHash = await generateSign.calculateHash(transaction_string_with_two_signatures);
+        //Sign it with private key!! 
+        //_____TODO_____CHANGE THE USERID and ORG FOR SECOND SIGNATURE!!!
+        var finalSignature = await generateSign.signDocument(finalHash, received.userid, received.org);
+        console.log("Final Signature"+ finalSignature);
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
