@@ -18,3 +18,12 @@ class Display(http.Controller):
         return request.render("SCM.transacts", {
             'transactions': data
         })
+
+    @http.route('/tracetx/', website=True, auth='public')
+    def traced_results(self, **kw):
+        displayhelper = DisplayHelper.getInstance()
+        trace = displayhelper.getTracedResults()
+        print(trace)
+        return request.render("SCM.transacts", {
+            'transactions': trace
+        })

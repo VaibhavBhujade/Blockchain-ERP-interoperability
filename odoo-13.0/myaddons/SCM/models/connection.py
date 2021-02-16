@@ -5,9 +5,11 @@ import logging
 import sys
 import json
 
+
 class DisplayHelper:
     __instance = None
     data = None
+    trace = None
 
     @staticmethod
     def getInstance():
@@ -24,17 +26,25 @@ class DisplayHelper:
         else:
             DisplayHelper.__instance = self
 
-    def display(self, information):
-        print("Display Function called")
-        print("Information: " + information)
-        transaction_list = information.split('}')
-        DisplayHelper.data = transaction_list
-        print("data", DisplayHelper.data)
-        print("Type", type(DisplayHelper.data))
-
+    def display(self, information, flag):
+        if flag == 'query':
+            print("Information: " + information)
+            transaction_list = information.split('}')
+            DisplayHelper.data = transaction_list
+            print("data", DisplayHelper.data)
+            print("Type", type(DisplayHelper.data))
+        elif flag == 'trace':
+            traced_list = information.split('}')
+            DisplayHelper.trace = traced_list
+            print("Traced Result", DisplayHelper.trace)
+            print("Type", type(DisplayHelper.trace))
 
     def getData(self):
         return DisplayHelper.data
+
+    def getTracedResults(self):
+        return DisplayHelper.trace
+
 
 _logger = logging.getLogger(__name__)
 
@@ -45,10 +55,11 @@ class DateTimeEncoder(JSONEncoder):
         if isinstance(obj, (datetime.date, datetime.datetime)):
             return obj.isoformat()
 
+
 def connect_send(data, flag):
     _logger.info('CONNECTION SUCCESSFUL')
     _logger.info(data)
-    #### TCP ####
+    # TCP
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = ('localhost', 10000)
     print(server_address)
@@ -62,16 +73,20 @@ def connect_send(data, flag):
         print(s)
         sock.sendall(bytes(s, encoding="utf-8"))
 
-
     finally:
         information = str(sock.recv(1024), 'utf-8')
         print(information)
         if flag == 'query':
             displayHelper = DisplayHelper.getInstance()
-            displayHelper.display(information)
+            displayHelper.display(information, 'query')
+            print("Printed the information")
+            displayHelper.getData()
+        elif flag == 'trace':
+            displayHelper = DisplayHelper.getInstance()
+            displayHelper.display(information, 'trace')
             print("Printed the information")
             displayHelper.getData()
 
         print(sys.stderr, 'closing socket')
         sock.close()
-    #### END ####
+    # END ####
