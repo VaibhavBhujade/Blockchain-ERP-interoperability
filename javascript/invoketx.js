@@ -1,16 +1,10 @@
-/*
- * Copyright IBM Corp. All Rights Reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+
 
 'use strict';
 var os = require('os');
 //import {getDataToHash} from './generateSign.js';
 const generateSign =require('./generateSign.js');
-// const getDataToHash =require('./generateSign.js');
-// const calculateHash =require('./generateSign.js');
-// const getDataToHashWithSignature =require('./generateSign.js');
+
 async function main(received) {
     try {
         const { KJUR, KEYUTIL } = require('jsrsasign');
@@ -45,7 +39,7 @@ async function main(received) {
 
         //get data to hash 
         var transaction_string = await generateSign.getDataToHash(received);
-        //var transaction_string = "hello";
+        
         //hash the transaction data
         var hashToAction =  await generateSign.calculateHash(transaction_string) 
         console.log("Hash of the file: " + hashToAction);
@@ -57,7 +51,7 @@ async function main(received) {
         // get certificate from the certfile
         const certLoaded = walletContents.credentials.certificate;
 
-        //var userPublicKey = KEYUTIL.getKey(certLoaded);
+        
         var userPublicKey = KEYUTIL.getKey(publicKey1);
         var recover = new KJUR.crypto.Signature({"alg": "SHA256withECDSA"});
         recover.init(userPublicKey);

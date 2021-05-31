@@ -14,19 +14,7 @@ var server = net.createServer((socket) => {
         var received=JSON.parse(buffer.toString('utf-8'));
         console.log(`${received.label}\n`);
 
-        //---------------To-do--------------------//
-        const fs = require('fs') 
-  
-        // Data which will write in a file. 
-        let data = "Learning how to write in a file."
         
-        // Write data in 'Output.txt' . 
-        fs.writeFile('Output.txt', data, (err) => { 
-            
-            // In case of a error throw err. 
-            if (err) throw err; 
-        }) 
-        //----------------------------------//
         if(received.label=='transaction')
         {
             invoketx.main(received);
@@ -47,7 +35,7 @@ var server = net.createServer((socket) => {
         }
         else if(received.label=='generate')
         {
-            generateSign.generate(received);
+            //generateSign.generate(received);
             (async () => {
                const k = await generateSign.generate(received)
                console.log(k);

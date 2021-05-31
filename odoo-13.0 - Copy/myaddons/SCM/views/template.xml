@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="transacts" name="Transactions on Ledger">
+        <t t-call="website.layout">
+            <div class="container">
+                Queried results received from ledger:
+
+<!--                <t t-esc="transactions"></t>-->
+
+                <t t-foreach="transactions" t-as="transaction">
+                    <tr t-att-style="people_odd and 'background-color:#eeeeee' or None">
+                            <td style="padding: 5px">
+                                <t t-esc="transaction"></t><br/><br/>
+                            </td>
+                    </tr>
+
+                </t>
+            </div>
+        </t>
+
+    </template>
+
+</odoo>

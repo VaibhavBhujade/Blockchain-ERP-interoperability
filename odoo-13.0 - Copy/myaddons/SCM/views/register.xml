@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--Register-->
+    <record id="register_form" model="ir.ui.view">
+            <field name="name">register.details.form</field>
+            <field name="model">register.details</field>
+            <field name="arch" type="xml">
+                <form string="AllTransactions">
+                    <sheet>
+                            <group>
+                                <field name="org"></field>
+                                <field name="userid"></field>
+                                <field name="enrollmentid"></field>
+                             </group>
+                    <button string="Register" type="object" name="register_user"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <!--    Attach action to record: action_summary-->
+    <record id="register_user" model="ir.actions.act_window">
+        <field name="name">Register User</field>
+        <field name="type">ir.action.act.window</field>
+        <field name="res_model">register.details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register new user
+            </p>
+        </field>
+
+    </record>
+
+    <menuitem id="registerUser" name="Register User" parent="transaction_root" action="register_user"/>
+</odoo>

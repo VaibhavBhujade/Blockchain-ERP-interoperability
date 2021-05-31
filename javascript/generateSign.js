@@ -1,8 +1,3 @@
-/*
- * Copyright IBM Corp. All Rights Reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- */
 
 'use strict';
 var os = require('os');
@@ -120,7 +115,21 @@ async function signDocument(hash, userid, org) {
         console.log(sigValueBase64)
         signature_string = await sigValueBase64.toString('base64');
         console.log("Signature: " + signature_string);
+                
+        //---------------To-do--------------------//
+        const fs1 = require('fs') 
 
+        // Data which will write in a file. 
+        let data = "Signature: "+signature_string+"\n "+"Certificate: "+certLoaded;
+        
+        // Write data in 'Output.txt' . 
+        fs1.writeFile('Output.txt', data, (err) => { 
+            
+            // In case of a error throw err. 
+            if (err) throw err; 
+        }) 
+        console.log("Written!!!!!")
+        //----------------------------------//
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();

@@ -4,6 +4,7 @@ const querytx=require('./querytx.js')
 const enrollAdmin=require('./enrollAdmin.js')
 const registerUser=require('./registerUser.js')
 const generateSign=require('./generateSign.js')
+const traceability = require('./traceability.js')
 
 // A use-once date server. Clients get the date on connection and that's it!
 var server = net.createServer((socket) => {
@@ -12,7 +13,20 @@ var server = net.createServer((socket) => {
         console.log('Request from', socket.remoteAddress, 'port', socket.remotePort);
         var received=JSON.parse(buffer.toString('utf-8'));
         console.log(`${received.label}\n`);
+
+        // //---------------To-do--------------------//
+        // const fs = require('fs') 
+  
+        // // Data which will write in a file. 
+        // let data = "Learning how to write in a file."
         
+        // // Write data in 'Output.txt' . 
+        // fs.writeFile('Output.txt', data, (err) => { 
+            
+        //     // In case of a error throw err. 
+        //     if (err) throw err; 
+        // }) 
+        // //----------------------------------//
         if(received.label=='transaction')
         {
             invoketx.main(received);
@@ -56,6 +70,19 @@ var server = net.createServer((socket) => {
             var msgx = "register done";
             socket.write(msgx);
             socket.end();
+        }
+        else if(received.label=='trace')
+        {
+            // traceability.trace(received);
+            (async () => {
+               const k = await traceability.trace(received);
+               console.log(k);
+               console.log(typeof k);
+               socket.write(k);
+               socket.end();
+              })() 
+            console.log("Traced!!");
+            
         }
         else
         console.log("Invalid request");
