@@ -1,5 +1,6 @@
 # Blockchain-ERP-interoperability
 
+
 ## Contents of this file
 
 * Introduction
@@ -8,7 +9,7 @@
 * Contributers
 
 ## Introduction
-
+Blockchain has many use cases but it is still not utilized to it's full potential due to lack of interoperability. Our aim is to make the existing ERP system interoperable with blockchain.
 
 ## Setup
 
@@ -49,7 +50,7 @@ docker volume prune
 ```
 
 ## Tech Stack
-* Hyperledger Fabric
+* Hyperledger Fabric Blockchain
 * Odoo ERP
 * NodeJS
 
